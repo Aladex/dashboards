@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -77,7 +77,7 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
-          "expr": "count_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} |~ \" 403 | 404 \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])",
+          "expr": "sum by (user_agent) (\ncount_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} |~ \" 403 | 404 \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])\n)",
           "legendFormat": "{{user_agent}}",
           "queryType": "range",
           "refId": "A"
@@ -104,7 +104,8 @@
               "viz": false
             }
           },
-          "mappings": []
+          "mappings": [],
+          "noValue": "0"
         },
         "overrides": []
       },
@@ -142,13 +143,13 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
-          "expr": "count_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} |~ \" 403 | 404 \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])",
+          "expr": "sum by (site_path) (\ncount_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} |~ \" 40[34] \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])\n)",
           "legendFormat": "{{site_path}}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Боты (хакеры)",
+      "title": "Запрет входа",
       "transformations": [],
       "type": "piechart"
     },
@@ -169,8 +170,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 19,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -247,7 +248,7 @@
           "refId": "A"
         }
       ],
-      "title": "Боты (хакеры)",
+      "title": "Ответы",
       "transformations": [
         {
           "id": "convertFieldType",
@@ -260,7 +261,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
