@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -77,13 +76,13 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
-          "expr": "sum by (user_agent) (\ncount_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} |~ \" 403 | 404 \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])\n)",
+          "expr": "sum by (user_agent) (\ncount_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} !~ \"10\\\\.207\\\\.83\" |~ \" 4\\\\d{2} \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])\n)",
           "legendFormat": "{{user_agent}}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Боты (хакеры)",
+      "title": "4XX User-Agents",
       "transformations": [],
       "type": "piechart"
     },
@@ -143,13 +142,13 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
-          "expr": "sum by (site_path) (\ncount_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} |~ \" 40[34] \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])\n)",
+          "expr": "sum by (site_path) (\ncount_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} !~ \"10\\\\.207\\\\.83\" |~ \" 4\\\\d{2} \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])\n)",
           "legendFormat": "{{site_path}}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Запрет входа",
+      "title": "4XX",
       "transformations": [],
       "type": "piechart"
     },
@@ -213,7 +212,36 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "400",
+                  "401",
+                  "403",
+                  "404",
+                  "499"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 12,
@@ -242,7 +270,7 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
-          "expr": "sum by (http_status) (\ncount_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} |~ \" 4\\\\d{2} \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])  \n)",
+          "expr": "sum by (http_status) (\ncount_over_time({pod_namespace=~\"ingress-nginx|ingress-nginx-lan\"} !~ \"10\\\\.207\\\\.83\" |~ \" 4\\\\d{2} \" | regexp \"\\\\s(?P<http_status>\\\\d{3})\\\\s\\\\d+\\\\s\\\\\\\\\\\"(?P<site_path>.+)\\\\\\\\\\\"\\\\s\\\\\\\\\\\"(?P<user_agent>.+)\\\\\\\\\\\"\" [1m])  \n)",
           "legendFormat": "{{http_status}}",
           "queryType": "range",
           "refId": "A"
@@ -269,7 +297,7 @@
     "list": []
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {},
